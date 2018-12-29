@@ -8,7 +8,7 @@
 
 # Callback
 For automatic callback, tick the checkboxes `Allow overriding URL from Payment Request Form`  and   
-`Send an error notification to merchant's keeper.`
+`Send an error notification to merchant's keeper`
 
 If you want to set up the Callback manually, *leave the checkboxes unticked* and enter the result URL's on the merchant setting page instead.
 
