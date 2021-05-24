@@ -1,7 +1,7 @@
 # WebMoney Payment Gateway Module for WHMCS 8.x
 
 # Installation
-1) Copy the files from the `gateway` folder to your WHMCS directory at `./modules/gateways`
+1) Copy the files from the `gateways` folder to your WHMCS directory at `./modules/gateways`
 2) Go to the Admin area and enable the payment gateway module
 3) Configure the settings on the module and merchant website (see callback below)
 4) Create a Test payment
