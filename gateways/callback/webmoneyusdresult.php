@@ -8,11 +8,11 @@ foreach ( $_REQUEST as $key => $value )
 {
     $arr .= $key."=>".$value."\n";
 }
-if ( !isset($_POST[LMI_PAYMENT_AMOUNT]) || 
+if ( !isset($_POST[LMI_PAYMENT_AMOUNT]) ||
      !isset($_POST[LMI_PAYMENT_NO]) 	||
      !isset($_POST[LMI_PAYEE_PURSE]) 	||
      !isset($_POST[LMI_SYS_INVS_NO]) 	||
-     !isset($_POST[LMI_SYS_TRANS_NO])  	|| 
+     !isset($_POST[LMI_SYS_TRANS_NO])  	||
      !isset($_POST[LMI_PAYER_PURSE]) 	||
      !isset($_POST[LMI_SYS_TRANS_DATE]) ||
      !isset($_POST[LMI_HASH] )		||
@@ -25,20 +25,19 @@ if ( !isset($_POST[LMI_PAYMENT_AMOUNT]) ||
 $debugreport .= $arr;
 $result = mysql_query( "SELECT userid, tblinvoices.id as id, total, tblclients.currency as currency, tblpaymentgateways.value as convertto FROM tblinvoices, tblclients, tblpaymentgateways  WHERE tblclients.id=tblinvoices.userid and tblpaymentgateways.gateway='webmoneyusd' and tblpaymentgateways.setting='convertto' and tblinvoices.id='".(int)$_POST['LMI_PAYMENT_NO']."'" );
 $data = mysql_fetch_array( $result );
-$result3 = mysql_query( "SELECT value FROM `tblpaymentgateways` WHERE gateway='webmoneyusd' and setting='webmoneyusdkey'" );
-$webmoneyusdkey = mysql_fetch_array( $result3 );
-$my_crc = strtoupper( hash('sha256', $_POST['LMI_PAYEE_PURSE'].$_POST['LMI_PAYMENT_AMOUNT'].$_POST['LMI_PAYMENT_NO'].$_POST['LMI_MODE'].$_POST['LMI_SYS_INVS_NO'].$_POST['LMI_SYS_TRANS_NO'].$_POST['LMI_SYS_TRANS_DATE'].$webmoneyusdkey['0'].$_POST['LMI_PAYER_PURSE'].$_POST['LMI_PAYER_WM']) );
+$webmoneyusdparams = getGatewayVariables('webmoneyusd');
+$webmoneyusdkey = $webmoneyusdparams['webmoneyusdkey'];
+$my_crc = strtoupper( hash('sha256', $_POST['LMI_PAYEE_PURSE'].$_POST['LMI_PAYMENT_AMOUNT'].$_POST['LMI_PAYMENT_NO'].$_POST['LMI_MODE'].$_POST['LMI_SYS_INVS_NO'].$_POST['LMI_SYS_TRANS_NO'].$_POST['LMI_SYS_TRANS_DATE'].$webmoneyusdkey.$_POST['LMI_PAYER_PURSE'].$_POST['LMI_PAYER_WM']) );
 if ( strtoupper( $my_crc ) != strtoupper( $_POST[LMI_HASH] ) )
 {
-    logtransaction( "WebMoney Z", $debugreport, "Error" );
+    logtransaction( "WebMoney Z", $debugreport, "Error CRC" );
     echo "NO";
     exit( );
 }
 
 $total_invoice = convertcurrency($data['total'], $data['currency'], $data['convertto']);
 
-$rate = mysql_query( "SELECT value FROM `tblpaymentgateways` WHERE gateway='webmoneyusd' and setting='webmoneyusdrate'" );
-$rate = mysql_fetch_array( $rate );
+$rate = $webmoneyusdparams['webmoneyusdrate'];
 
 $itogo = round( sprintf( "%.2f", $total_invoice ) * $rate[0], 2 );
 if($itogo!=$_POST['LMI_PAYMENT_AMOUNT'])
