@@ -29,7 +29,7 @@ $result = mysql_query( "SELECT userid, tblinvoices.id as id, total, tblclients.c
 $data = mysql_fetch_array( $result );
 $webmoneyrurparams = getGatewayVariables('webmoneyrur');
 $webmoneyrurkey = $webmoneyrurparams['webmoneyrurkey'];
-$my_crc =  strtoupper( hash('sha256', $_POST['LMI_PAYEE_PURSE'].$_POST['LMI_PAYMENT_AMOUNT'].$_POST['LMI_PAYMENT_NO'].$_POST['LMI_MODE'].$_POST['LMI_SYS_INVS_NO'].$_POST['LMI_SYS_TRANS_NO'].$_POST['LMI_SYS_TRANS_DATE'].$webmoneyrurkey['0'].$_POST['LMI_PAYER_PURSE'].$_POST['LMI_PAYER_WM']) );
+$my_crc =  strtoupper( hash('sha256', $_POST['LMI_PAYEE_PURSE'].$_POST['LMI_PAYMENT_AMOUNT'].$_POST['LMI_PAYMENT_NO'].$_POST['LMI_MODE'].$_POST['LMI_SYS_INVS_NO'].$_POST['LMI_SYS_TRANS_NO'].$_POST['LMI_SYS_TRANS_DATE'].$webmoneyrurkey.$_POST['LMI_PAYER_PURSE'].$_POST['LMI_PAYER_WM']) );
 if ( strtoupper( $my_crc ) != strtoupper( $_POST[LMI_HASH] ) )
 {
     logtransaction( "WebMoney R", $debugreport, "Error" );
