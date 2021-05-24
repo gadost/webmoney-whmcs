@@ -1,4 +1,4 @@
-# WebMoney Payment Gateway Module for WHMCS
+# WebMoney Payment Gateway Module for WHMCS 8
 
 # Installation
 1) Copy the files from the `gateway` folder to your WHMCS directory at `./modules/gateways`
